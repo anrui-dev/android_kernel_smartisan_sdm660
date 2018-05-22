@@ -957,6 +957,10 @@ struct ufs_hba {
 	struct io_latency_state io_lat_read;
 	struct io_latency_state io_lat_write;
 	bool restore_needed;
+
+#ifdef CONFIG_VENDOR_SMARTISAN
+	int ufschip_version;
+#endif
 };
 
 static inline void ufshcd_mark_shutdown_ongoing(struct ufs_hba *hba)

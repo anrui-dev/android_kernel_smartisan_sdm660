@@ -30,6 +30,28 @@
 	qcom,pmic-id = <0x0001001b 0x0001011a 0x0 0x0>;
 };
 
+&firmware {
+	android {
+		compatible = "android,firmware";
+		fstab {
+			compatible = "android,fstab";
+
+			vendor {
+				status = "disabled";
+			};
+
+			system {
+				compatible = "android,system";
+				dev = "/dev/block/platform/soc/c0c4000.sdhci/by-name/system";
+				type = "ext4";
+				mnt_flags = "ro,barrier=1,discard";
+				fsmgr_flags = "wait";
+				status = "ok";
+			};
+		};
+	};
+};
+
 /*&pm660a_oledb {
 	status = "okay";
 	qcom,oledb-default-voltage-mv = <6400>;

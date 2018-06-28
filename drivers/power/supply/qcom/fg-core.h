@@ -406,6 +406,9 @@ struct fg_chip {
 	struct fg_alg_flag	*alg_flags;
 	int			*debug_mask;
 	char			batt_profile[PROFILE_LEN];
+#ifdef CONFIG_VENDOR_SMARTISAN
+	unsigned irq_wake;
+#endif
 	struct fg_dt_props	dt;
 	struct fg_batt_props	bp;
 	struct fg_cyc_ctr_data	cyc_ctr;
@@ -463,6 +466,10 @@ struct fg_chip {
 	struct work_struct	esr_filter_work;
 	struct alarm		esr_filter_alarm;
 	ktime_t			last_delta_temp_time;
+#ifdef CONFIG_VENDOR_SMARTISAN
+	struct delayed_work	update_soc_work;
+	int 			prev_soc;
+#endif
 };
 
 /* Debugfs data structures are below */

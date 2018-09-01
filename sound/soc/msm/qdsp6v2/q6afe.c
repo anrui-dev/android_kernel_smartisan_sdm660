@@ -497,32 +497,6 @@ static int32_t afe_lpass_resources_callback(struct apr_client_data *data)
 		return -EINVAL;
 	}
 
-#ifdef CONFIG_VENDOR_SMARTISAN
-	if (param_id == AFE_PARAM_ID_DSM_CFG  ||
-		param_id == AFE_PARAM_ID_DSM_INFO ||
-		param_id == AFE_PARAM_ID_CALIB) {
-		struct afe_dsm_get_resp *dsm_resp =
-			(struct afe_dsm_get_resp *) payload;
-
-		if (payload_size < sizeof(*dsm_resp)) {
-			pr_err("%s: Error: received size %d, afe_dsm_get_resp size %zu\n",
-					__func__, payload_size, sizeof(*dsm_resp));
-			return -EINVAL;
-		}
-
-		if (this_afe.dsm_payload)
-			memcpy(this_afe.dsm_payload, dsm_resp->payload,
-					payload_size - sizeof(*dsm_resp));
-
-		if (!dsm_resp->status) {
-			atomic_set(&this_afe.state, 0);
-		} else {
-			pr_debug("%s: dsm resp status: %d", __func__, dsm_resp->status);
-			atomic_set(&this_afe.state, -1);
-		}
-	}
-#endif
-
 	return 0;
 }
 

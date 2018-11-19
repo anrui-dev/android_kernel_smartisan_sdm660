@@ -17,8 +17,15 @@
 			compatible = "qcom,qpnp-power-on";
 			reg = <0x800 0x100>;
 
-			/* PON 2 for VOL_UP */
+			/* Power */
+			qcom,pon_1 {
+				label = "power";
+				linux,code = <116>;
+			};
+
+			/* Volume Up */
 			qcom,pon_2 {
+				label = "volume_up";
 				linux,code = <115>;
 			};
 		};
@@ -31,8 +38,8 @@
 		compatible = "gpio-keys";
 		input-name = "gpio-keys";
 
-		/* GPIO 42 for VOL_DN */
-		vol_dn {
+		/* Volume Down */
+		volume_down {
 			label = "volume_down";
 			gpios = <&tlmm 42 0x1>;
 			linux,input-type = <1>;
@@ -41,12 +48,12 @@
 			debounce-interval = <15>;
 		};
 
-		/* GPIO 44 for SMART */
-		smart {
-			label = "smart";
+		/* Shortcuts */
+		shortcuts {
+			label = "shortcuts";
 			gpios = <&tlmm 44 0x1>;
 			linux,input-type = <1>;
-			linux,code = <0x2fe>;
+			linux,code = <0x246>;
 			gpio-key,wakeup;
 			debounce-interval = <15>;
 		};

@@ -296,7 +296,8 @@ dtb-$(CONFIG_ARCH_SDM660) += sdm660-sim.dtb \
 endif
 
 ifdef CONFIG_VENDOR_SMARTISAN
-dtb-$(CONFIG_ARCH_SDM630) += osborn-sdm630-qrd.dtb
+dtb-$(CONFIG_ARCH_SDM630) += osborn-sdm630-qrd.dtb \
+	oxford-sdm636-qrd.dtb
 else
 dtb-$(CONFIG_ARCH_SDM630) += sdm630-rumi.dtb \
 	sdm630-pm660a-rumi.dtb \

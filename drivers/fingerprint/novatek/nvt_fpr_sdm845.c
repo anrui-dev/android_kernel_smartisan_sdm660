@@ -419,33 +419,6 @@ static struct platform_driver nvt_fpr_uio_driver = {
 
 extern char *fingerprint_id;
 
-static int get_fingerprint_id(char *src)
-{
-    if (src == NULL)
-    {
-        NVT_DBG_ERR("src is NULL\n");
-        return 0;
-    }
-
-    if (!strcmp(src, "nvtfp"))
-    {
-        fingerprint_id = "nvtfp";
-    }
-    else if(!strcmp(src, "fpc"))
-    {
-        fingerprint_id = "fpc";
-    }
-    else if(!strcmp(src, "goodix"))
-    {
-        fingerprint_id = "goodix";
-    }
-
-    NVT_DBG_DBG("kernel detect fingerprint_id = *%s*\n", fingerprint_id);
-
-    return 1;
-}
-__setup("androidboot.fingerprint.id=", get_fingerprint_id);
-
 /*
  * Main initialization/remove routines
  */
@@ -453,7 +426,7 @@ static int __init nvt_fpr_sdm845_init(void)
 {
     int retval = 0;
 
-    if(strcmp(fingerprint_id, "nvtfp")) 
+    if(strcmp(fingerprint_id, "nvtfp"))
     {
         NVT_DBG_ERR("%s fingerprint_id = %s \n", __func__, fingerprint_id);
         return -1;

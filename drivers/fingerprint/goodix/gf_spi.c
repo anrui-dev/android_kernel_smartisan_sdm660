@@ -857,6 +857,8 @@ static int get_fingerprint_id(char *src)
 		fingerprint_id = "fpc";
 	else if (!strcmp(src, "goodix"))
 		fingerprint_id = "goodix";
+	else if (!strcmp(src, "nvtfp"))
+		fingerprint_id = "nvtfp";
 
 	pr_warn("kernel detect fingerprint_id = *%s*\n", fingerprint_id);
 

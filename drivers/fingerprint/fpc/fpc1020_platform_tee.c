@@ -629,22 +629,6 @@ static struct platform_driver fpc1020_driver = {
 
 extern char *fingerprint_id;
 
-static int get_fingerprint_id(char *src)
-{
-	if (src == NULL)
-		return 0;
-
-	if (!strcmp(src, "fpc"))
-		fingerprint_id = "fpc";
-	else if (!strcmp(src, "goodix"))
-		fingerprint_id = "goodix";
-
-	pr_warn("kernel detect fingerprint_id = *%s*\n", fingerprint_id);
-
-	return 1;
-}
-__setup("androidboot.fingerprint.id=", get_fingerprint_id);
-
 static int __init fpc1020_init(void)
 {
 	int rc = 0;

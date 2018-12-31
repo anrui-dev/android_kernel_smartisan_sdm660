@@ -38,6 +38,22 @@
 		pinctrl-1 = <&goodix_reset_active>;
 		pinctrl-2 = <&goodix_irq_active>;
 	};
+
+	nvt_uio {
+		compatible = "nvt_uio";
+		interrupt-parent = <&tlmm>;
+		interrupts = <72 0x0>;
+
+		nvt_uio,rst_gpio = <&tlmm 20 0>;
+		nvt_uio,irq_gpio = <&tlmm 72 0>;
+		nvt_uio,v3_gpio  = <&pm660l_gpios 6 0>;
+
+		pinctrl-names = "default", "sleep";
+		pinctrl-0 = <&nvt_reset_pin_disable_active>;
+		pinctrl-1 = <&nvt_reset_pin_disable_suspend>;
+
+		qcom,use-pinctrl;
+	};
 };
 
 &tlmm {
@@ -124,6 +140,34 @@
 			drive-strength = <2>;
 			bias-disable = <0>;
 			input-enable;
+		};
+	};
+
+	nvt_reset_pin_disable_active: active {
+		mux {
+			pins = "gpio20";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio20";
+			drive-strength = <2>;
+			bias-disable;
+			output-high;
+		};
+	};
+
+	nvt_reset_pin_disable_suspend: suspend {
+		mux {
+			pins = "gpio20";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio20";
+			drive-strength = <2>;
+			bias-disable;
+			output-low;
 		};
 	};
 };

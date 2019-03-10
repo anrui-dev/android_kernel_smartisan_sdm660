@@ -96,32 +96,7 @@ static u32 mdss_fb_pseudo_palette[16] = {
 };
 
 #ifdef CONFIG_VENDOR_SMARTISAN
-static u32 gamma_luminance_TM[] = {
-	0,    10,    21,   38,   138,  168,  190,  270,
-	340,  410,  490,  550,  600,  680,  810,  900,
-	1005,  1135,  1245, 1385, 1529, 1672, 1845, 2030,
-	2230, 2425, 2633, 2799, 3123, 3304, 3534, 3786,
-	4095
-};
-
-static u32 gamma_luminance_TXD[] = {
-	0,    12,    24,   43,   146,  168,  190,  275,
-	354,  425,  515,  568,  620,  712,  845,  945,
-	1055,  1195,  1315, 1442, 1599, 1762, 1948, 2125,
-	2265, 2475, 2673, 2820, 3120, 3300, 3530, 3780,
-	4095
-};
-
-static u32 gamma_luminance_BOE[] = {
-	0,    12,    24,   43,   148,  170,  193,  278,
-	358,  430,  518,  573,  626,  719,  855,  958,
-	1060,  1200,  1330, 1465, 1640, 1778, 1988, 2160,
-	2315, 2518, 2730, 2865, 3165, 3360, 3590, 3845,
-	4095
-};
-
 extern int lcd_id;
-int brightnes_set_value = 0;
 #endif
 
 static struct msm_mdp_interface *mdp_instance;
@@ -310,9 +285,6 @@ static void mdss_fb_set_bl_brightness(struct led_classdev *led_cdev,
 {
 	struct msm_fb_data_type *mfd = dev_get_drvdata(led_cdev->dev->parent);
 	int bl_lvl;
-#ifdef CONFIG_VENDOR_SMARTISAN
-	int temp;
-#endif
 
 	if (mfd->boot_notification_led) {
 		led_trigger_event(mfd->boot_notification_led, 0);
@@ -322,13 +294,6 @@ static void mdss_fb_set_bl_brightness(struct led_classdev *led_cdev,
 	if (value > mfd->panel_info->brightness_max)
 		value = mfd->panel_info->brightness_max;
 
-#ifdef CONFIG_VENDOR_SMARTISAN
-	if (value > 0 && value < 10)
-		value = 10;
-
-	brightnes_set_value = value;
-#endif
-
 	/* This maps android backlight level 0 to 255 into
 	   driver backlight level 0 to bl_max with rounding */
 	MDSS_BRIGHT_TO_BL(bl_lvl, value, mfd->panel_info->bl_max,
@@ -336,22 +301,6 @@ static void mdss_fb_set_bl_brightness(struct led_classdev *led_cdev,
 
 	if (!bl_lvl && value)
 		bl_lvl = 1;
-
-#ifdef CONFIG_VENDOR_SMARTISAN
-	temp = value / 8;
-	if (value < 255) {
-		if (lcd_id == 11)
-			bl_lvl = gamma_luminance_TM[temp] + (gamma_luminance_TM[temp + 1] - gamma_luminance_TM[temp]) * (value % 8) / 8;
-		else if (lcd_id == 12)
-			bl_lvl = gamma_luminance_TXD[temp] + (gamma_luminance_TXD[temp + 1] - gamma_luminance_TXD[temp]) * (value % 8) / 8;
-		else if (lcd_id == 13)
-			bl_lvl = gamma_luminance_BOE[temp] + (gamma_luminance_BOE[temp + 1] - gamma_luminance_BOE[temp]) * (value % 8) / 8;
-		else
-			pr_info("incorrect panel id for osborn backlight selection\n");
-	} else {
-		bl_lvl = 4095;
-	}
-#endif
 
 	if (!IS_CALIB_MODE_BL(mfd) && (!mfd->ext_bl_ctrl || !value ||
 							!mfd->bl_level)) {
@@ -362,13 +311,6 @@ static void mdss_fb_set_bl_brightness(struct led_classdev *led_cdev,
 	mfd->bl_level_usr = bl_lvl;
 }
 
-#ifdef CONFIG_VENDOR_SMARTISAN
-static enum led_brightness mdss_fb_get_bl_brightness(
-	struct led_classdev *led_cdev)
-{
-	return brightnes_set_value;
-}
-#else
 static enum led_brightness mdss_fb_get_bl_brightness(
 	struct led_classdev *led_cdev)
 {
@@ -380,7 +322,6 @@ static enum led_brightness mdss_fb_get_bl_brightness(
 
 	return value;
 }
-#endif
 
 static struct led_classdev backlight_led = {
 	.name           = "lcd-backlight",

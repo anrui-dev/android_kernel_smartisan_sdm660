@@ -53,7 +53,7 @@
 			label = "shortcuts";
 			gpios = <&tlmm 44 0x1>;
 			linux,input-type = <1>;
-			linux,code = <0x246>;
+			linux,code = <212>;
 			gpio-key,wakeup;
 			debounce-interval = <15>;
 		};

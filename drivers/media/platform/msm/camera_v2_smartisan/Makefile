@@ -1,0 +1,24 @@
+ccflags-y += -Idrivers/media/platform/msm/camera_v2_smartisan
+ccflags-y += -Idrivers/media/platform/msm/camera_v2_smartisan/sensor
+ccflags-y += -Idrivers/media/platform/msm/camera_v2_smartisan/codecs
+ccflags-y += -Idrivers/media/platform/msm/camera_v2_smartisan/isps
+ccflags-y += -Idrivers/media/platform/msm/camera_v2_smartisan/pproc
+ccflags-y += -Idrivers/media/platform/msm/camera_v2_smartisan/msm_vb2
+ccflags-y += -Idrivers/media/platform/msm/camera_v2_smartisan/camera
+ccflags-y += -Idrivers/media/platform/msm/camera_v2_smartisan/jpeg_10
+ccflags-y += -Idrivers/media/platform/msm/camera_v2_smartisan/jpeg_dma
+ccflags-y += -Idrivers/media/platform/msm/camera_v2_smartisan/fd
+ccflags-y += -Idrivers/media/platform/msm/camera_v2_smartisan/common
+
+obj-$(CONFIG_MSMB_CAMERA) += common/
+obj-$(CONFIG_MSMB_CAMERA) += msm.o
+obj-$(CONFIG_MSMB_CAMERA) += camera/
+obj-$(CONFIG_MSMB_CAMERA) += msm_vb2/
+obj-$(CONFIG_MSMB_CAMERA) += sensor/
+obj-$(CONFIG_MSMB_CAMERA) += pproc/
+obj-$(CONFIG_MSMB_CAMERA) += isp/
+obj-$(CONFIG_MSMB_CAMERA) += ispif/
+obj-$(CONFIG_MSMB_JPEG) += jpeg_10/
+obj-$(CONFIG_MSM_JPEGDMA) += jpeg_dma/
+obj-$(CONFIG_MSMB_CAMERA) += msm_buf_mgr/
+obj-$(CONFIG_MSM_FD) += fd/

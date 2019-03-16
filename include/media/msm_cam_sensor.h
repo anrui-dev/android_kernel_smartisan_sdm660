@@ -41,7 +41,9 @@ struct msm_camera_sensor_slave_info32 {
 	uint8_t  is_init_params_valid;
 	struct msm_sensor_init_params sensor_init_params;
 	enum msm_sensor_output_format_t output_format;
+#ifndef CONFIG_VENDOR_SMARTISAN
 	uint8_t bypass_video_node_creation;
+#endif
 };
 
 struct msm_camera_csid_lut_params32 {
@@ -107,6 +109,9 @@ struct msm_eeprom_info_t32 {
 	compat_uptr_t power_setting_array;
 	enum i2c_freq_mode_t i2c_freq_mode;
 	compat_uptr_t mem_map_array;
+#ifdef CONFIG_VENDOR_SMARTISAN
+	compat_uptr_t write_map_array; // JiGaoping add for write data to eeprom 2016-12-02
+#endif
 };
 
 struct msm_eeprom_cfg_data32 {

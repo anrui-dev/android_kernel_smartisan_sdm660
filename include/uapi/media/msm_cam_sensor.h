@@ -90,7 +90,9 @@ enum sensor_sub_module_t {
 	SUB_MODULE_EXT,
 	SUB_MODULE_IR_LED,
 	SUB_MODULE_IR_CUT,
+#ifndef CONFIG_VENDOR_SMARTISAN
 	SUB_MODULE_LASER_LED,
+#endif
 	SUB_MODULE_MAX,
 };
 
@@ -292,6 +294,9 @@ struct msm_eeprom_info_t {
 	struct msm_sensor_power_setting_array *power_setting_array;
 	enum i2c_freq_mode_t i2c_freq_mode;
 	struct msm_eeprom_memory_map_array *mem_map_array;
+#ifdef CONFIG_VENDOR_SMARTISAN
+	struct msm_eeprom_write_map_array  *write_map_array; // JiGaoping add for write data to eeprom 2016-12-02
+#endif
 };
 
 struct msm_ir_led_cfg_data_t {
@@ -393,9 +398,13 @@ enum msm_ois_cfg_download_type_t {
 enum msm_ois_i2c_operation {
 	MSM_OIS_WRITE = 0,
 	MSM_OIS_POLL,
+#ifndef CONFIG_VENDOR_SMARTISAN
 	MSM_OIS_READ,
+#endif
 };
+#ifndef CONFIG_VENDOR_SMARTISAN
 #define MSM_OIS_READ MSM_OIS_READ
+#endif
 
 struct reg_settings_ois_t {
 	uint16_t reg_addr;

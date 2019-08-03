@@ -65,9 +65,18 @@
 #include <scsi/scsi_ioctl.h>
 #include <scsi/scsicam.h>
 
+#ifdef CONFIG_VENDOR_SMARTISAN
+#include <soc/qcom/boot_stats.h>
+#endif
+
 #include "sd.h"
 #include "scsi_priv.h"
 #include "scsi_logging.h"
+
+#ifdef CONFIG_VENDOR_SMARTISAN
+#define HAS_A_UFS 0x11
+#define HAS_NO_UFS 0x01
+#endif
 
 MODULE_AUTHOR("Eric Youngdale");
 MODULE_DESCRIPTION("SCSI disk (sd) driver");
@@ -2990,6 +2999,12 @@ static int sd_format_disk_name(char *prefix, int index, char *buf, int buflen)
 	char *end = buf + buflen;
 	char *p;
 	int unit;
+
+#ifdef CONFIG_VENDOR_SMARTISAN
+	if (get_ufs_flag() != HAS_A_UFS) {
+		index += 3;
+	}
+#endif
 
 	p = end - 1;
 	*p = '\0';

@@ -37,7 +37,12 @@
 			compatible = "android,fstab";
 
 			vendor {
-				status = "disabled";
+				compatible = "android,vendor";
+				dev = "/dev/block/platform/soc/c0c4000.sdhci/by-name/vendor";
+				type = "ext4";
+				mnt_flags = "ro,barrier=1,discard";
+				fsmgr_flags = "wait";
+				status = "ok";
 			};
 
 			system {

@@ -2749,6 +2749,7 @@ static ssize_t fastrpc_debugfs_read(struct file *filp, char __user *buffer,
 	char *fileinfo = NULL;
 	char single_line[UL_SIZE] = "----------------";
 	char title[UL_SIZE] = "=========================";
+	unsigned long irq_flags = 0;
 
 	fileinfo = kzalloc(DEBUGFS_SIZE, GFP_KERNEL);
 	if (!fileinfo)
@@ -2811,6 +2812,7 @@ static ssize_t fastrpc_debugfs_read(struct file *filp, char __user *buffer,
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"%s%s%s%s%s\n", single_line, single_line,
 			single_line, single_line, single_line);
+		spin_lock_irqsave(&me->hlock, irq_flags);
 		hlist_for_each_entry_safe(gmaps, n, &me->maps, hn) {
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"%-20d|0x%-18llX|0x%-18X|0x%-20lX\n\n",
@@ -2818,18 +2820,21 @@ static ssize_t fastrpc_debugfs_read(struct file *filp, char __user *buffer,
 			(uint32_t)gmaps->size,
 			gmaps->va);
 		}
+		spin_unlock_irqrestore(&me->hlock, irq_flags);
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"%-20s|%-20s|%-20s|%-20s\n",
 			"len", "refs", "raddr", "flags");
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"%s%s%s%s%s\n", single_line, single_line,
 			single_line, single_line, single_line);
+		spin_lock_irqsave(&me->hlock, irq_flags);
 		hlist_for_each_entry_safe(gmaps, n, &me->maps, hn) {
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"0x%-18X|%-20d|%-20lu|%-20u\n",
 			(uint32_t)gmaps->len, gmaps->refs,
 			gmaps->raddr, gmaps->flags);
 		}
+		spin_unlock_irqrestore(&me->hlock, irq_flags);
 	} else {
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			 "\n%s %13s %d\n", "cid", ":", fl->cid);
@@ -2871,6 +2876,7 @@ static ssize_t fastrpc_debugfs_read(struct file *filp, char __user *buffer,
 			"%s%s%s%s%s\n",
 			single_line, single_line, single_line,
 			single_line, single_line);
+		mutex_lock(&fl->map_mutex);
 		hlist_for_each_entry_safe(map, n, &fl->maps, hn) {
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"0x%-20lX|0x%-20llX|0x%-20zu\n\n",
@@ -2880,6 +2886,7 @@ static ssize_t fastrpc_debugfs_read(struct file *filp, char __user *buffer,
 				"%s %d\n\n",
 				"DEV_MINOR:", fl->dev_minor);
 		}
+		mutex_unlock(&fl->map_mutex);
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"%-20s|%-20s|%-20s|%-20s\n",
 			"len", "refs",
@@ -2888,23 +2895,27 @@ static ssize_t fastrpc_debugfs_read(struct file *filp, char __user *buffer,
 			"%s%s%s%s%s\n",
 			single_line, single_line, single_line,
 			single_line, single_line);
+		mutex_lock(&fl->map_mutex);
 		hlist_for_each_entry_safe(map, n, &fl->maps, hn) {
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"%-20zu|%-20d|0x%-20lX|%-20d\n\n",
 			map->len, map->refs, map->raddr,
 			map->uncached);
 		}
+		mutex_unlock(&fl->map_mutex);
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"%-20s|%-20s\n", "secure", "attr");
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"%s%s%s%s%s\n",
 			single_line, single_line, single_line,
 			single_line, single_line);
+		mutex_lock(&fl->map_mutex);
 		hlist_for_each_entry_safe(map, n, &fl->maps, hn) {
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"%-20d|0x%-20lX\n\n",
 			map->secure, map->attr);
 		}
+		mutex_unlock(&fl->map_mutex);
 		len += scnprintf(fileinfo + len, DEBUGFS_SIZE - len,
 			"\n%s %s %s\n", title,
 			" LIST OF PENDING SMQCONTEXTS ", title);
